@@ -11,7 +11,6 @@ import {
   Stack,
   Button,
   Container,
-  Table,
   ScrollArea,
   Pagination,
 } from "@mantine/core";
@@ -69,13 +68,16 @@ interface Rocket {
 const ResourceList: React.FC = () => {
   const { endpoint } = useParams<{ endpoint: string }>();
   const navigate = useNavigate();
-  const [page, setPage] = React.useState(1); // Track the current page
-  const [pageSize] = React.useState(10); // Items per page
+  const [page, setPage] = React.useState(1);
+  const [pageSize] = React.useState(10);
 
-  const { data, error, isLoading } = useQuery<Launch[] | Crew[] | Rocket[] | PayloadData[], Error>(
-    [endpoint, page],
-    () => fetchApiData(`${endpoint}?page=${page}&page_size=${pageSize}`)
-  );
+  // Ensure correct typing for useQuery
+  const { data, error, isLoading } = useQuery({
+    queryKey: endpoint ? [endpoint, page] : ["default"], // Ensure a valid key is always provided
+    queryFn: () =>
+      fetchApiData(`${endpoint}?page=${page}&page_size=${pageSize}`), // Fetcher function
+    enabled: !!endpoint, // Only fetch when endpoint is defined
+  });
 
   if (isLoading) {
     return (
@@ -85,7 +87,7 @@ const ResourceList: React.FC = () => {
     );
   }
 
-  if (error) {
+  if (error instanceof Error) {
     return (
       <Center mt="md">
         <Text color="red">{error.message}</Text>
@@ -111,7 +113,6 @@ const ResourceList: React.FC = () => {
             <ReusableTable
               data={data as PayloadData[]}
               columns={[
-                // { key: "id", label: "ID" },
                 { key: "name", label: "Payload Name" },
                 { key: "type", label: "Type" },
                 { key: "mass_kg", label: "Mass (kg)" },
@@ -123,12 +124,18 @@ const ResourceList: React.FC = () => {
               onRowClick={(payload: PayloadData) => {
                 console.log("Payload clicked:", payload);
               }}
-              detailLinkPrefix="/payload"  // Added detailLinkPrefix for Payload
+              detailLinkPrefix="/payload" // Added detailLinkPrefix for Payload
             />
-            <div style={{ marginTop: "20px", display: "flex", justifyContent: "center" }}>
+            <div
+              style={{
+                marginTop: "20px",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
               <Pagination
                 onChange={(p) => setPage(p)}
-                total={Math.ceil(data.length / pageSize)}
+                total={Math.ceil((data as PayloadData[]).length / pageSize)}
                 size="lg"
                 color="blue"
               />
@@ -138,7 +145,8 @@ const ResourceList: React.FC = () => {
 
         {/* Render Rocket Cards */}
         {endpoint === "rockets" &&
-          data?.map((item) => {
+          Array.isArray(data) &&
+          data.map((item) => {
             const rocket = item as Rocket;
             return (
               <Card
@@ -224,7 +232,8 @@ const ResourceList: React.FC = () => {
 
         {/* Render Crew Cards */}
         {endpoint === "crew" &&
-          data?.map((item) => {
+          Array.isArray(data) &&
+          data.map((item) => {
             const crew = item as Crew;
             return (
               <Card
@@ -256,7 +265,6 @@ const ResourceList: React.FC = () => {
                     marginBottom: "1rem",
                   }}
                 />
-
                 <Stack spacing="xs" align="center" style={{ flexGrow: 1 }}>
                   <Text size="lg" weight={500}>
                     {crew.name}
@@ -268,7 +276,6 @@ const ResourceList: React.FC = () => {
                     Status: {crew.status}
                   </Text>
                 </Stack>
-
                 <Group spacing="xs" position="center">
                   {crew.launches && crew.launches.length > 0 && (
                     <Button
@@ -280,7 +287,6 @@ const ResourceList: React.FC = () => {
                       Launches
                     </Button>
                   )}
-
                   {crew.wikipedia && (
                     <Button
                       variant="light"
@@ -311,8 +317,22 @@ const ResourceList: React.FC = () => {
               onRowClick={(launch: Launch) => {
                 console.log("Launch clicked:", launch);
               }}
-              detailLinkPrefix="/launch-details"  // Added detailLinkPrefix for Launch
+              detailLinkPrefix="/launch-details"
             />
+            <div
+              style={{
+                marginTop: "20px",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <Pagination
+                onChange={(p) => setPage(p)}
+                total={Math.ceil((data as Launch[]).length / pageSize)}
+                size="lg"
+                color="blue"
+              />
+            </div>
           </ScrollArea>
         )}
       </div>
@@ -321,3 +341,4 @@ const ResourceList: React.FC = () => {
 };
 
 export default ResourceList;
+

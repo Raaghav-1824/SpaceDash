@@ -8,13 +8,12 @@ import RocketDetailCard from "../components/RocketDetailCard";
 const RocketPage = () => {
   const { rocketId } = useParams<{ rocketId: string }>(); // Fetch rocketId from params
 
-  const { data, error, isLoading } = useQuery(
-    ["rocket", rocketId],
-    () => fetchApiData(`rockets/${rocketId}`), // Fetch data from API
-    {
-      enabled: !!rocketId, // Ensure query runs only when rocketId is present
-    }
-  );
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["rocket", rocketId],
+    queryFn: () => fetchApiData(`rockets/${rocketId}`),
+    enabled: !!rocketId, // Only fetch if rocketId is defined
+  });
+  
   console.log("Rocket Data:", data);
 
   if (isLoading) {

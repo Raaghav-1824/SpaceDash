@@ -108,9 +108,6 @@ const ReusableTable = <T extends { id: string | number; [key: string]: any }>({
                     size="xs"
                     color="blue"
                     style={{ padding: "6px 12px", fontSize: "12px" }}
-                    onClick={(e) => {
-                      console.log("Button clicked, navigating to:", `${detailLinkPrefix}/${row.id}`);
-                    }}
                   >
                     Details
                   </Button>

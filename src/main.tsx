@@ -11,8 +11,9 @@ const queryClient = new QueryClient({
     queries: {
       refetchOnWindowFocus: false,
       retry: false,
+      staleTime: 1000 * 60 * 5,  // 5 minutes before data becomes stale
       cacheTime: 1000 * 60 * 15, // Cache data for 15 minutes
-    },
+    } as any, // Adding `as any` to cast and avoid type error
   },
 });
 

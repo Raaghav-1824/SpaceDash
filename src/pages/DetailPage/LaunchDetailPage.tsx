@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import { Loader, Container, Text } from "@mantine/core";
 import LaunchDetailCard from "../../components/LaunchDetailCard";
 import { fetchApiData } from "../../api/spaceXApi";
-import ReusableTable from "../../components/Table/ReusableTable";
 
 const LaunchDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // Get launch ID from params
@@ -12,15 +11,15 @@ const LaunchDetailPage: React.FC = () => {
 
   useEffect(() => {
     if (id) {
-      // Fetch launch details based on the launch ID
+      setLoading(true);
       fetchApiData("launches", id)
         .then((launchDetails) => {
           setLaunchData(launchDetails);
-          setLoading(false);
         })
-        .catch(() => {
-          setLoading(false);
-        });
+        .catch((error) => {
+          console.error("Failed to fetch launch details:", error);
+        })
+        .finally(() => setLoading(false));
     }
   }, [id]);
 
