@@ -1,0 +1,73 @@
+.navbar {
+  background-color: var(--mantine-color-white);
+  height: 100vh;
+  width: 300px;
+  padding: var(--mantine-spacing-md);
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--mantine-color-gray-3);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+}
+
+.navbar.closed {
+  width: 0;
+  padding: 0;
+  overflow: hidden;
+  box-shadow: none;
+}
+
+.header {
+  padding: var(--mantine-spacing-md);
+  margin: 0 calc(var(--mantine-spacing-md) * -1);
+  color: var(--mantine-color-dark);
+  font-size: 18px;
+  font-weight: bold;
+  border-bottom: 1px solid var(--mantine-color-gray-3);
+}
+
+.links {
+  flex: 1;
+  margin: 0 calc(var(--mantine-spacing-md) * -1);
+  padding: var(--mantine-spacing-md) 0;
+  overflow-y: auto;
+}
+
+.linksInner {
+  padding: var(--mantine-spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-sm);
+}
+
+.footer {
+  margin: 0 calc(var(--mantine-spacing-md) * -1);
+  border-top: 1px solid var(--mantine-color-gray-3);
+  padding: var(--mantine-spacing-md);
+  font-size: 14px;
+  text-align: center;
+  color: var(--mantine-color-gray-7);
+}
+
+.navlink {
+  display: flex;
+  align-items: center;
+  gap: var(--mantine-spacing-sm);
+  padding: var(--mantine-spacing-sm) var(--mantine-spacing-md);
+  color: var(--mantine-color-dark);
+  font-weight: 500;
+  border-radius: var(--mantine-radius-sm);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  cursor: pointer;
+}
+
+.navlink:hover {
+  background-color: var(--mantine-color-gray-0);
+  transform: scale(1.02);
+}
+
+.navlink.active {
+  background-color: var(--mantine-color-blue-light);
+  color: var(--mantine-color-blue-dark);
+  font-weight: 600;
+}
