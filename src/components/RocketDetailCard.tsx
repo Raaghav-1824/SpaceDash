@@ -2,75 +2,103 @@ import React from "react";
 import { Card, Text, Image, Badge, Stack, Group } from "@mantine/core";
 
 interface RocketDetailProps {
-  rocket: any; // Use the appropriate type if you have one
+  rocket: any;
 }
 
 const RocketDetailCard: React.FC<RocketDetailProps> = ({ rocket }) => {
   return (
-    <Card shadow="lg" padding="xl" radius="lg" withBorder>
+    <Card
+      shadow="sm"
+      padding="lg"
+      radius="md"
+      withBorder
+      style={{
+        marginBottom: "1.5rem",
+        maxWidth: "700px", // Limit max width for the card
+        width: "100%", // Ensure it takes full available width but doesn't exceed maxWidth
+        margin: "auto", // Center card horizontally
+      }}
+    >
       <Stack spacing="lg">
-        {/* Rocket Name */}
-        <Text size="xl" weight={900} align="center" style={{ marginBottom: "1rem" }}>
+        <Text
+          size="xl"
+          weight={700}
+          align="center"
+          style={{ marginBottom: "1rem", fontSize: "1.25rem" }} // Slightly reduced font size
+        >
           {rocket.name}
         </Text>
 
-        {/* Images */}
-        <Group spacing="lg" position="center">
+        <Group spacing="md" position="center" style={{ flexWrap: "wrap" }}>
           {rocket.flickr_images.map((image: string, index: number) => (
             <Image
               key={index}
               src={image}
               alt={rocket.name}
-              height={350}
-              width={450}
+              height={250} // Reduced image height
+              width={300} // Reduced image width
               radius="md"
               withPlaceholder
             />
           ))}
         </Group>
 
-        {/* Description */}
-        <Text size="md" style={{ lineHeight: 1.8, textAlign: "justify" }}>
+        <Text size="md" style={{ lineHeight: 1.6, textAlign: "justify" }}>
           {rocket.description}
         </Text>
 
-        {/* Rocket Details */}
-        <Group position="center" spacing="lg">
+        <Group position="center" spacing="lg" style={{ flexWrap: "wrap" }}>
           <Badge
             color="blue"
             radius="xl"
-            size="lg"
-            style={{ height: "40px", width: "auto", padding: "0 16px", fontSize: "1rem" }}
+            size="md"
+            style={{
+              height: "30px", // Reduced height of badges
+              padding: "0 12px",
+              fontSize: "0.875rem", // Slightly reduced font size
+            }}
           >
             Active: {rocket.active ? "Yes" : "No"}
           </Badge>
           <Badge
             color="green"
             radius="xl"
-            size="lg"
-            style={{ height: "40px", width: "auto", padding: "0 16px", fontSize: "1rem" }}
+            size="md"
+            style={{
+              height: "30px",
+              padding: "0 12px",
+              fontSize: "0.875rem",
+            }}
           >
             Stages: {rocket.stages}
           </Badge>
           <Badge
             color="pink"
             radius="xl"
-            size="lg"
-            style={{ height: "40px", width: "auto", padding: "0 16px", fontSize: "1rem" }}
+            size="md"
+            style={{
+              height: "30px",
+              padding: "0 12px",
+              fontSize: "0.875rem",
+            }}
           >
             Boosters: {rocket.boosters}
           </Badge>
           <Badge
             color="yellow"
             radius="xl"
-            size="lg"
-            style={{ height: "40px", width: "auto", padding: "0 16px", fontSize: "1rem" }}
+            size="md"
+            style={{
+              height: "30px",
+              padding: "0 12px",
+              fontSize: "0.875rem",
+            }}
           >
             Success Rate: {rocket.success_rate_pct}%
           </Badge>
         </Group>
 
-        <Group position="center" spacing="xl">
+        <Group position="center" spacing="xl" style={{ flexWrap: "wrap" }}>
           <Text>
             <strong>First Flight:</strong> {rocket.first_flight}
           </Text>
@@ -82,10 +110,18 @@ const RocketDetailCard: React.FC<RocketDetailProps> = ({ rocket }) => {
           </Text>
         </Group>
 
-        {/* Wikipedia Link */}
         {rocket.wikipedia && (
           <Text align="center" style={{ marginTop: "1.5rem" }}>
-            <a href={rocket.wikipedia} target="_blank" rel="noopener noreferrer" style={{ fontWeight: "bold", color: "#007BFF", textDecoration: "none" }}>
+            <a
+              href={rocket.wikipedia}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                fontWeight: "bold",
+                color: "#007BFF",
+                textDecoration: "none",
+              }}
+            >
               Learn More
             </a>
           </Text>

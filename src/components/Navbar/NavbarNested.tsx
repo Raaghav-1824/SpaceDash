@@ -1,17 +1,15 @@
+import React from "react";
 import {
-  IconAdjustments,
-  IconCalendarStats,
-  IconFileAnalytics,
-  IconGauge,
   IconNotes,
-  IconPresentationAnalytics,
+  IconGauge,
   IconRocket,
-  IconSatellite,
+  IconFileAnalytics,
+  IconCalendarStats,
   IconShip,
+  IconSatellite,
 } from "@tabler/icons-react";
-import { Code, Group, ScrollArea, NavLink, Box, Stack } from "@mantine/core";
+import { Box, Group, ScrollArea, NavLink, Stack, Flex } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
-
 const apiRoutes = [
   {
     label: "Company Info",
@@ -50,21 +48,18 @@ const apiRoutes = [
     link: "/resources/landpads",
     endpoint: "landpads",
   },
-
   {
     label: "Launchpads",
     icon: IconShip,
     link: "/resources/launchpads",
     endpoint: "launchpads",
   },
-
   {
     label: "Roadster Info",
     icon: IconNotes,
     link: "/roadster",
     endpoint: "roadster",
   },
-
   {
     label: "Ships",
     icon: IconShip,
@@ -94,43 +89,36 @@ const apiRoutes = [
 export function NavbarNested({ isOpen }: { isOpen: boolean }) {
   const navigate = useNavigate();
 
-  const links = apiRoutes.map((item) => (
-    <NavLink
-      key={item.label}
-      label={item.label}
-      icon={<item.icon size={18} />}
-      onClick={() => navigate(item.link)}
-      sx={{
-        "&:hover": {
-          backgroundColor: "#f0f4ff",
-          color: "#1a73e8",
-          borderRadius: "6px",
-        },
-      }}
-    />
-  ));
-
   return (
     <Box
       sx={{
-        width: isOpen ? 280 : 0,
-        height: "100vh",
-        backgroundColor: "#f5f7fa",
-        overflow: "hidden",
-        display: "block",
-        transition: "width 0.4s ease",
-        padding: isOpen ? "20px" : "0",
-        boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
+        // position: "fixed",
+        // top: "60px", // Adjust based on header height
+        // left: 0,
+        // bottom: 0,
+        // width: isNavbarOpen ? "20%" : "0", // Adjust width based on navbar toggle state
+        // transition: "width 0.3s ease", // Smooth transition when toggling
+        // zIndex: 999, // Ensure it's below the header
+        // backgroundColor: "white",
+        // boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)", // Optional shadow
+        display:"flex",
+        justifyContent: "flex-start",
+        alignItems: "center",
       }}
     >
-      <Group position="apart" sx={{ marginBottom: "20px" }}>
-        <Box sx={{ fontSize: 16, fontWeight: 500, color: "#1a73e8" }}>
-          SpaceX
-        </Box>
-      </Group>
+      {/* Navbar content */}
 
-      <ScrollArea>
-        <Stack spacing="sm">{links}</Stack>
+      <ScrollArea style={{ height: "100%" , padding:"20px" }}>
+        <Stack>
+          {apiRoutes.map((route, index) => (
+            <NavLink
+              key={index}
+              label={route.label}
+              icon={<route.icon />}
+              onClick={() => navigate(route.link)}
+            />
+          ))}
+        </Stack>
       </ScrollArea>
     </Box>
   );

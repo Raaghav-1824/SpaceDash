@@ -1,24 +1,22 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import { Center, Loader, Text } from "@mantine/core";
+import { Center, Loader, Text, Container, Box } from "@mantine/core";
 import { fetchApiData } from "../api/spaceXApi";
 import RocketDetailCard from "../components/RocketDetailCard";
 
 const RocketPage = () => {
-  const { rocketId } = useParams<{ rocketId: string }>(); // Fetch rocketId from params
+  const { rocketId } = useParams<{ rocketId: string }>();
 
   const { data, error, isLoading } = useQuery({
     queryKey: ["rocket", rocketId],
     queryFn: () => fetchApiData(`rockets/${rocketId}`),
-    enabled: !!rocketId, // Only fetch if rocketId is defined
+    enabled: !!rocketId,
   });
-  
-  console.log("Rocket Data:", data);
 
   if (isLoading) {
     return (
-      <Center style={{ height: "100vh" }}>
+      <Center style={{ height: "calc(100vh - 60px)" }}>
         <Loader size="xl" />
       </Center>
     );
@@ -35,9 +33,20 @@ const RocketPage = () => {
   }
 
   return (
-    <div style={{ padding: "2rem" }}>
-      <RocketDetailCard rocket={data} />
-    </div>
+    <Container
+      fluid
+      px={{ base: "xs", sm: "md", lg: "lg" }}
+      py={{ base: "xs", sm: "md", lg: "lg" }}
+      style={{
+        marginTop: "56px", // Adjusted for fixed Navbar height
+        width: "calc(100% - 15%)", // Subtract navbar width
+        paddingTop: "80px", // Add extra padding for header
+      }}
+    >
+      <Box style={{ maxWidth: "700px", width: "100%", margin: "auto" }}>
+        <RocketDetailCard rocket={data} />
+      </Box>
+    </Container>
   );
 };
 

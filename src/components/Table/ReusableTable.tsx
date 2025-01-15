@@ -1,40 +1,60 @@
 import React, { useState, useEffect } from "react";
-import { Table, Text, TextInput, ScrollArea, Button } from "@mantine/core";
+import {
+  Table,
+  Text,
+  TextInput,
+  ScrollArea,
+  Button,
+  Pagination,
+} from "@mantine/core";
 import { Link } from "react-router-dom";
 
-// Define prop interface
 interface TableProps<T> {
   data: T[];
   columns: { key: string; label: string }[];
   onRowClick: (payload: T) => void;
-  detailLinkPrefix: string; // Add detailLinkPrefix here
+  detailLinkPrefix: string; // Used to generate detail page link
+  withPagination?: boolean; // Make sure this is optional
 }
 
-// Update T to allow dynamic property access
-const ReusableTable = <T extends { id: string | number; [key: string]: any }>({
+const ReusableTable = <T extends { id: string | number }>({
   data,
   columns,
   onRowClick,
   detailLinkPrefix,
+  withPagination = false,
 }: TableProps<T>) => {
   const [search, setSearch] = useState("");
   const [filteredData, setFilteredData] = useState(data);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   useEffect(() => {
     setFilteredData(data);
   }, [data]);
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const query = e.currentTarget.value.toLowerCase();
-    setSearch(query);
-
+  useEffect(() => {
     const searchedData = data.filter((item) =>
       Object.values(item).some((val) =>
-        String(val).toLowerCase().includes(query)
+        String(val).toLowerCase().includes(search.toLowerCase())
       )
     );
     setFilteredData(searchedData);
+  }, [search, data]);
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.currentTarget.value);
   };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  // Pagination: Slice the data based on current page and items per page
+  const paginatedData = filteredData.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   return (
     <ScrollArea style={{ maxWidth: "100%" }}>
@@ -53,10 +73,7 @@ const ReusableTable = <T extends { id: string | number; [key: string]: any }>({
       <Table
         striped
         highlightOnHover
-        style={{
-          width: "100%",
-          minWidth: "700px",
-        }}
+        style={{ width: "100%", minWidth: "700px" }}
       >
         <thead>
           <tr>
@@ -74,20 +91,18 @@ const ReusableTable = <T extends { id: string | number; [key: string]: any }>({
                 <Text>{label}</Text>
               </th>
             ))}
+            <th>Actions</th> {/* Added a column for actions (Detail button) */}
           </tr>
         </thead>
         <tbody>
-          {filteredData.map((row) => (
+          {paginatedData.map((row) => (
             <tr
-              key={row.id}
+              key={String(row.id)} // Ensure the key is unique and always a string
               style={{
                 cursor: "pointer",
                 borderBottom: "1px solid #f2f2f2",
               }}
-              onClick={() => {
-                if (onRowClick) onRowClick(row);
-                console.log("Row clicked:", row);
-              }}
+              onClick={() => onRowClick(row)}
             >
               {columns.map(({ key }) => (
                 <td
@@ -98,18 +113,16 @@ const ReusableTable = <T extends { id: string | number; [key: string]: any }>({
                     color: "#555",
                   }}
                 >
-                  {String(row[key])}
+                  {row[key as keyof T] !== undefined
+                    ? String(row[key as keyof T])
+                    : "-"}
                 </td>
               ))}
-              <td style={{ textAlign: "center" }}>
+              <td style={{ padding: "12px 16px" }}>
+                {/* Detail Button */}
                 <Link to={`${detailLinkPrefix}/${row.id}`}>
-                  <Button
-                    variant="light"
-                    size="xs"
-                    color="blue"
-                    style={{ padding: "6px 12px", fontSize: "12px" }}
-                  >
-                    Details
+                  <Button variant="outline" size="xs">
+                    Detail
                   </Button>
                 </Link>
               </td>
@@ -117,6 +130,35 @@ const ReusableTable = <T extends { id: string | number; [key: string]: any }>({
           ))}
         </tbody>
       </Table>
+      {withPagination && (
+        <Pagination
+          value={currentPage} // Use 'value' instead of 'page'
+          onChange={handlePageChange}
+          total={Math.ceil(filteredData.length / itemsPerPage)}
+          style={{
+            marginTop: "20px",
+            textAlign: "center", 
+            justifyContent: "center", 
+          }}
+          size="sm" 
+          styles={(theme) => ({
+            control: {
+              fontSize: "12px", 
+              height: "30px", 
+              padding: "0 8px", 
+            },
+            item: {
+              border: "none", 
+              backgroundColor: "transparent", 
+              color: theme.colors.gray[7],
+              "&[data-active]": {
+                backgroundColor: theme.colors.blue[6],
+                color: "white", 
+              },
+            },
+          })}
+        />
+      )}
     </ScrollArea>
   );
 };
