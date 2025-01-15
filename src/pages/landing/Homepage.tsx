@@ -2,6 +2,7 @@
 import React from "react";
 import { Grid, Card, Image, Text, Group, Box, Button } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { Link } from "react-router-dom";
 
 export function Homepage({ isNavbarOpen }: { isNavbarOpen: boolean }) {
   const features = [
@@ -60,7 +61,7 @@ export function Homepage({ isNavbarOpen }: { isNavbarOpen: boolean }) {
         sx={{
           flexGrow: 1,
           padding: "10px",
-        //   marginLeft: isNavbarOpen ? "20%" : 0,
+          //   marginLeft: isNavbarOpen ? "20%" : 0,
           transition: "margin-left 0.4s ease",
         }}
       >
@@ -110,8 +111,8 @@ export function Homepage({ isNavbarOpen }: { isNavbarOpen: boolean }) {
                   fullWidth
                   mt="md"
                   radius="md"
-                  component="a"
-                  href={feature.link}
+                  component={Link}
+                  to={feature.link} // Use `to` instead of `href`
                 >
                   Details
                 </Button>
